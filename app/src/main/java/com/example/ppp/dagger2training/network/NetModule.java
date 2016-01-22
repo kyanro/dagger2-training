@@ -9,6 +9,7 @@ import dagger.Provides;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 
@@ -34,16 +35,12 @@ public class NetModule {
     }
 
     @Provides @Singleton
-    public Retrofit provideRetrofit(OkHttpClient okHttpClient) {
+    public GithubApi provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-    }
-
-    @Provides @Singleton
-    public GithubApi provideGithubApi(Retrofit retrofit) {
-        return retrofit.create(GithubApi.class);
+                .build().create(GithubApi.class);
     }
 }
